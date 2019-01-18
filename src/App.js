@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   StyleSheet, Platform, Image, Text, View, ScrollView
 } from 'react-native';
@@ -14,6 +14,7 @@ export default class App extends React.Component {
   }
 
   async componentDidMount() {
+    console.log('allo');
     // TODO: You: Do firebase things
     // const { user } = await firebase.auth().signInAnonymously();
     // console.warn('User -> ', user.toJSON());
@@ -21,6 +22,15 @@ export default class App extends React.Component {
   }
 
   render() {
+    const database = firebase.database();
+    database
+      .ref('/users/User1')
+      .once('value')
+      .then((snapshot) => {
+        console.log((snapshot.val() && snapshot.val().username) || 'Anonymous');
+        // ...
+      });
+    console.log('test');
     return (
       <ScrollView>
         <View style={styles.container}>
