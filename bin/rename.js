@@ -13,50 +13,42 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const readInput = (input) => {
-  return new Promise((resolve, reject) => {
-    rl.question(`Enter your ${input}: `, (answer) => {
-      resolve(answer);
-    })
-  })
-};
+const readInput = input => new Promise((resolve) => {
+  rl.question(`Enter your ${input}: `, (answer) => {
+    resolve(answer);
+  });
+});
 
-const replaceInFile = (from, to) => {
-  return new Promise((resolve, reject) => {
-    const options = {
-      files: [
-        './android/**',
-        './ios/**',
-        './*',
-      ],
-      from: new RegExp(from, 'g'),
-      to: to
-    };
-    replace(options)
-    .then(changedFiles => {
+const replaceInFile = (from, to) => new Promise((resolve, reject) => {
+  const options = {
+    files: ['./android/**', './ios/**', './*'],
+    from: new RegExp(from, 'g'),
+    to
+  };
+  replace(options)
+    .then((changedFiles) => {
       if (changedFiles) {
-        console.log('[replaceInFile] Modified files: \n', changedFiles.join('\n'));
+        // console.log('[replaceInFile] Modified files: \n', changedFiles.join('\n'));
       }
       resolve();
     })
-    .catch(error => {
-      console.error('[replaceInFile] Error occurred: ', error);
+    .catch((error) => {
+      // console.error('[replaceInFile] Error occurred: ', error);
       reject(error);
-    })
-  })
-};
+    });
+});
 
 const renameFiles = (dir, from, to) => {
   const files = fs.readdirSync(dir);
   for (let i = 0; i < files.length; i += 1) {
     const filename = files[i];
-    const path = dir + '/' + filename;
+    const path = `${dir}/${filename}`;
     const file = fs.statSync(path);
     let newPath;
     if (filename.indexOf(from) !== -1) {
-      newPath = dir + '/' + filename.replace(from, to);
+      newPath = `${dir}/${filename.replace(from, to)}`;
       fs.renameSync(path, newPath);
-      console.log(`[renameFiles] Renamed: ${path} to: ${newPath}`);
+      // console.log(`[renameFiles] Renamed: ${path} to: ${newPath}`);
     }
     // Recursive
     if (file.isDirectory()) {
@@ -65,66 +57,51 @@ const renameFiles = (dir, from, to) => {
   }
 };
 
-const updateProjectName = (name) => {
-  console.log('---------------------------------------');
-  console.log(`Updating project name: ${name}`);
-  console.log('---------------------------------------');
-  return replaceInFile(DEFAULT_PROJECT_NAME, name)
-  .then(() => {
-    console.log('---------------------------------------');
-    console.log('Finished updating project name');
-    console.log('---------------------------------------');
-    console.log();
-  });
-};
-
-const updatePackageName = (packageName) => {
-  console.log('---------------------------------------');
-  console.log(`Updating package name: ${packageName}`);
-  console.log('---------------------------------------');
-  return replaceInFile(DEFAULT_PACKAGE_NAME, packageName)
-  .then(() => {
-    console.log('---------------------------------------');
-    console.log('Finished updating package name');
-    console.log('---------------------------------------');
-    console.log();
-  });
-  ;
-};
-
-const renameProjectFiles = (name) => {
-  console.log('---------------------------------------');
-  console.log(`Rename project files`);
-  console.log('---------------------------------------');
-  return new Promise((resolve, reject) => {
-    renameFiles(BASE_DIRECTORY, DEFAULT_PROJECT_NAME, name);
-    renameFiles(BASE_DIRECTORY, DEFAULT_PROJECT_NAME.toLowerCase(), name.toLowerCase());
-    console.log('---------------------------------------');
-    console.log('Finished renaming project files');
-    console.log('---------------------------------------');
-    console.log();
-    resolve();
-  })
-};
-
-const renameCompanyFiles = (name) => {
-  console.log('---------------------------------------');
-  console.log(`Rename company files`);
-  console.log('---------------------------------------');
-  return new Promise((resolve, reject) => {
-    renameFiles(BASE_DIRECTORY, DEFAULT_COMPANY_NAME, name);
-    console.log('---------------------------------------');
-    console.log('Finished renaming company files');
-    console.log('---------------------------------------');
-    console.log();
-    resolve();
-  })
-};
-
+// console.log('---------------------------------------');
+// console.log(`Updating project name: ${name}`);
+// console.log('---------------------------------------');
+const updateProjectName = name => replaceInFile(DEFAULT_PROJECT_NAME, name).then(() => {
+  // console.log('---------------------------------------');
+  // console.log('Finished updating project name');
+  // console.log('---------------------------------------');
+  // console.log();
+});
+// console.log('---------------------------------------');
+// console.log(`Updating package name: ${packageName}`);
+// console.log('---------------------------------------');
+const updatePackageName = packName => replaceInFile(DEFAULT_PACKAGE_NAME, packName).then(() => {
+  // console.log('---------------------------------------');
+  // console.log('Finished updating package name');
+  // console.log('---------------------------------------');
+  // console.log();
+});
+// console.log('---------------------------------------');
+// console.log('Rename project files');
+// console.log('---------------------------------------');
+const renameProjectFiles = name => new Promise((resolve) => {
+  renameFiles(BASE_DIRECTORY, DEFAULT_PROJECT_NAME, name);
+  renameFiles(BASE_DIRECTORY, DEFAULT_PROJECT_NAME.toLowerCase(), name.toLowerCase());
+  // console.log('---------------------------------------');
+  // console.log('Finished renaming project files');
+  // console.log('---------------------------------------');
+  // console.log();
+  resolve();
+});
+// console.log('---------------------------------------');
+// console.log('Rename company files');
+// console.log('---------------------------------------');
+const renameCompanyFiles = name => new Promise((resolve) => {
+  renameFiles(BASE_DIRECTORY, DEFAULT_COMPANY_NAME, name);
+  // console.log('---------------------------------------');
+  // console.log('Finished renaming company files');
+  // console.log('---------------------------------------');
+  // console.log();
+  resolve();
+});
 const run = async () => {
-  console.log('---------------------------------------------------------');
+  // console.log('---------------------------------------------------------');
   let projectName = await readInput('Project name, e.g. My Amazing Project');
-  console.log('---------------------------------------------------------');
+  // console.log('---------------------------------------------------------');
   if (!projectName || projectName === '' || projectName.trim() === '') {
     throw new Error('ERROR: Please supply a project name');
   }
@@ -133,7 +110,7 @@ const run = async () => {
   }
 
   let companyName = await readInput('Company name, e.g. My Company');
-  console.log('---------------------------------------------------------');
+  // console.log('---------------------------------------------------------');
   if (!companyName || companyName === '' || companyName.trim() === '') {
     throw new Error('ERROR: Please supply a company name');
   }
@@ -149,24 +126,24 @@ const run = async () => {
   rl.close();
 
   updateProjectName(projectName)
-  .then(() => updatePackageName(packageName))
-  .then(() => renameProjectFiles(projectName))
-  .then(() => renameCompanyFiles(companyName))
-  .then(() => {
-    console.log();
-    console.log('---------------------------------------------------------');
-    console.log('Set project parameters to:');
-    console.log('---------------------------------------------------------');
-    console.log('Project name: ', projectName);
-    console.log('Company name: ', companyName);
-    console.log('Package name: ', packageName);
-    console.log('---------------------------------------------------------');
-    console.log();
-  });
+    .then(() => updatePackageName(packageName))
+    .then(() => renameProjectFiles(projectName))
+    .then(() => renameCompanyFiles(companyName))
+    .then(() => {
+      // console.log();
+      // console.log('---------------------------------------------------------');
+      // console.log('Set project parameters to:');
+      // console.log('---------------------------------------------------------');
+      // console.log('Project name: ', projectName);
+      // console.log('Company name: ', companyName);
+      // console.log('Package name: ', packageName);
+      // console.log('---------------------------------------------------------');
+      // console.log();
+    });
 };
 
-run().catch((error) => {
-  console.error(error.message);
-  console.log('---------------------------------------------------------');
+run().catch(() => {
+  // console.error(error.message);
+  // console.log('---------------------------------------------------------');
   process.exit();
 });
