@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "205034393977",
+    "firebase_url": "https://reactnative-8ec2d.firebaseio.com",
+    "project_id": "reactnative-8ec2d",
+    "storage_bucket": "reactnative-8ec2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205034393977:android:d286b4fcb33c1079",
+        "android_client_info": {
+          "package_name": "com.osef.reactnativeosef"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "205034393977-osbpuvtk8qj0skvbn5il53oalmf2bejn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoKLwJ7jTUikBwQ06YX1iKhGqjwkUJAQc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
