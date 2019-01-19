@@ -1,4 +1,6 @@
-import * as React from 'react';
+// @flow
+
+import React from 'react';
 import {
   StyleSheet, Platform, Image, Text, View, ScrollView
 } from 'react-native';
@@ -7,14 +9,18 @@ import firebase from 'react-native-firebase';
 
 const logo = require('./assets/ReactNativeFirebase.png');
 
-export default class App extends React.Component {
+type Props = {};
+
+type State = {};
+
+export default class App extends React.Component<Props, State> {
   constructor() {
     super();
     this.state = {};
   }
 
   async componentDidMount() {
-    console.log('allo');
+    // console.log('allo');
     // TODO: You: Do firebase things
     // const { user } = await firebase.auth().signInAnonymously();
     // console.warn('User -> ', user.toJSON());
@@ -26,11 +32,12 @@ export default class App extends React.Component {
     database
       .ref('/users/User1')
       .once('value')
-      .then((snapshot) => {
-        console.log((snapshot.val() && snapshot.val().username) || 'Anonymous');
+      .then(() => {
+        // param snapshot
+        // console.log((snapshot.val() && snapshot.val().username) || 'Anonymous');
         // ...
       });
-    console.log('test');
+    // console.log('test');
     return (
       <ScrollView>
         <View style={styles.container}>
