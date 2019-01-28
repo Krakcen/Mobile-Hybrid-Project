@@ -17,7 +17,7 @@ export default createMaterialBottomTabNavigator(
     About: { screen: AboutScreen }
   },
   {
-    initialRouteName: 'Map',
+    initialRouteName: 'CreateEvent',
     shifting: true,
     activeColor: AV.primaryColor,
     inactiveColor: AV.gray,

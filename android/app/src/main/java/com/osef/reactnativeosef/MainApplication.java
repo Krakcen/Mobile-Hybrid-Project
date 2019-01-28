@@ -29,6 +29,8 @@ import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.perf.RNFirebasePerformancePackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 
+import com.BV.LinearGradient.LinearGradientPackage;
+
 import com.airbnb.android.react.maps.MapsPackage;
 
 import java.util.Arrays;
@@ -52,7 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseRemoteConfigPackage(), new RNFirebaseCrashlyticsPackage(), new RNFirebaseDatabasePackage(),
           new RNFirebaseFirestorePackage(), new RNFirebaseFunctionsPackage(), new RNFirebaseInstanceIdPackage(),
           new RNFirebaseInvitesPackage(), new RNFirebaseLinksPackage(), new RNFirebaseMessagingPackage(),
-          new RNFirebaseNotificationsPackage(), new RNFirebasePerformancePackage(), new RNFirebaseStoragePackage());
+          new RNFirebaseNotificationsPackage(), new RNFirebasePerformancePackage(), new RNFirebaseStoragePackage(),
+          new LinearGradientPackage());
     }
 
     @Override

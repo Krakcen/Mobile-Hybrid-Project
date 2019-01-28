@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Provider } from 'react-redux';
+import { ThemeProvider } from 'react-native-elements';
 import AppNavigator from './navigators/AppNavigator';
 import store from './redux/configureStore';
 
@@ -14,9 +15,11 @@ export default class App extends React.Component<Props, State> {
 
   render() {
     return (
-      <Provider store={store}>
-        <AppNavigator />
-      </Provider>
+      <ThemeProvider>
+        <Provider store={store}>
+          <AppNavigator />
+        </Provider>
+      </ThemeProvider>
     );
   }
 }

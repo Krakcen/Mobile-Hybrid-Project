@@ -38,7 +38,9 @@
     "fs-extra": "^6.0.1",
     "react": "16.6.3",
     "react-native": "0.58.0-rc.2",
+    "react-native-elements": "^1.0.0-beta7",
     "react-native-firebase": "^5.2.0",
+    "react-native-linear-gradient": "^2.5.3",
     "react-native-maps": "^0.23.0",
     "react-native-paper": "^2.5.0",
     "react-native-vector-icons": "^6.1.0",
@@ -46,6 +48,7 @@
     "react-navigation-material-bottom-tabs": "^1.0.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
+    "redux-form": "^8.1.0",
     "redux-logger": "^3.0.6",
     "replace-in-file": "^3.4.2"
   },
