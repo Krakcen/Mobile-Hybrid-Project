@@ -20,23 +20,25 @@ export const signUpUser = async (email, password) => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .catch(() => {
-      // // Handle Errors here.
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // // ...
+    .catch((error) => {
+      alert(error);
     });
 };
+
+export const listenToAuthUser = async (func) => {
+  firebase.auth().onAuthStateChanged(func);
+};
+
+export const getCurrentUser = async () => firebase.auth().currentUser.uid.valueOf();
+
+export const logOutCurrentUser = async () => firebase.auth().signOut();
 
 export const loginUser = async (email, password) => {
   firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .catch(() => {
-      // // Handle Errors here.
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // // ...
+    .catch((error) => {
+      alert(error);
     });
 };
 
