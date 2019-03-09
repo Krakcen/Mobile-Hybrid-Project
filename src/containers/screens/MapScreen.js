@@ -1,9 +1,8 @@
 import React from 'react';
-import {
-  View, StyleSheet
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+// import Spinner from 'react-native-loading-spinner-overlay';
 
 import MainLoader from '../../utils/MainLoader';
 import customMapStyle from '../../utils/CustomMapStyle';

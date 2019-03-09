@@ -20,6 +20,7 @@ class LoginScreen extends React.Component {
   };
 
   componentDidMount = () => {
+    this.props.navigation.navigate('Main');
     this.interval = setInterval(() => {
       this.incrementCounter();
     }, 1000);

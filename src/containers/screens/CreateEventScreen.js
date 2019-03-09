@@ -1,21 +1,33 @@
 import React from 'react';
-import { View, ScrollView, TextInput } from 'react-native';
+import {
+  View, ScrollView, Platform, DatePickerAndroid, DatePickerIOS
+} from 'react-native';
 import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import {
   Input, Text, CheckBox, Button
 } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
+
+import firebase from 'react-native-firebase';
 
 import StatusBarIphone from '../../components/StatusBarIphone';
 import AV from '../../AppVariables';
 
 const DISPLAY_DEV = false;
 
+const database = firebase.database();
+
 const TextInputOsef = ({
-  input, osefLabel, osefIcon, ...inputProps
+  input,
+  osefLabel,
+  osefIcon,
+  errorMessage = null,
+  onPress = () => {},
+  ...inputProps
 }) => (
   <View
     style={{
@@ -28,42 +40,12 @@ const TextInputOsef = ({
     <Input
       style={{ borderBottomWidth: 1, borderBottomColor: 'black' }}
       {...inputProps}
+      onTouchStart={() => onPress(input)}
+      errorMessage={errorMessage}
       leftIcon={osefIcon}
       onChangeText={input.onChange}
       onBlur={input.onBlur}
       onFocus={input.onFocus}
-      value={input.value}
-    />
-  </View>
-);
-
-const TextAreaOsef = ({
-  input, osefLabel, osefIcon, ...inputProps
-}) => (
-  <View
-    style={{
-      paddingTop: 20,
-      paddingBottom: 20,
-      backgroundColor: DISPLAY_DEV && 'rgba(231, 34, 23, 0.5)'
-    }}
-  >
-    <Text>{osefLabel}</Text>
-    {
-      <Icon
-        style={{ paddingLeft: 15, paddingTop: 15 }}
-        name={osefIcon}
-        size={24}
-        color={AV.primaryColor}
-      />
-    }
-    <TextInput
-      style={{ borderBottomWidth: 1, borderBottomColor: 'black' }}
-      {...inputProps}
-      onChangeText={text => input.onChange(text)}
-      onBlur={input.onBlur}
-      onFocus={input.onFocus}
-      multiline
-      numberOfLines={4}
       value={input.value}
     />
   </View>
@@ -100,16 +82,114 @@ class CreateEventScreen extends React.Component {
     )
   };
 
-  componentDidMount = () => {};
+  state = {
+    dateOpen: false,
+    chosenDate: new Date(),
+    formError: ''
+  };
+
+  componentDidMount = () => {
+    const { change } = this.props;
+
+    const curDate = new Date();
+    const formatDate = `${curDate.getDate().toString()}/${(curDate.getMonth() + 1).toString()}/${(
+      curDate.getYear() + 1900
+    ).toString()}`;
+
+    change('event_date', formatDate);
+    // this.setState({ chosenDate: formatDate });
+  };
 
   handleTextChange = (text) => {
     console.log(`Changed with ${text}`);
   };
 
-  render() {
-    // const { form } = this.props;
+  handleDatePickerOpen = async (input) => {
+    const { change } = this.props;
+    try {
+      if (Platform.OS === 'ios') {
+        // console.log(DatePickerIOS);
+        this.setState({ formError: 'runnin the picker on IOS', dateOpen: true });
+      } else if (Platform.OS === 'android') {
+        const {
+          action, year, month, day
+        } = await DatePickerAndroid.open({
+          date: new Date()
+        });
 
-    // console.log(form);
+        if (action === DatePickerAndroid.dateSetAction) {
+          change('event_date', `${day}/${month + 1}/${year}`);
+          // Selected year, month (0-11), day
+        }
+        this.setState({ formError: 'runnin the picker on Android' });
+      }
+    } catch ({ code, message }) {
+      console.warn('Cannot open date picker', message);
+    }
+  };
+
+  formatIosDate = (date) => {
+    const { change } = this.props;
+
+    const iosDate = `${date.getDate().toString()}/${(date.getMonth() + 1).toString()}/${(
+      date.getYear() + 1900
+    ).toString()}`;
+
+    change('event_date', iosDate);
+    this.setState({ chosenDate: date });
+  };
+
+  validateEventOnSubmit = (values) => {
+    if (!values) return false;
+
+    if (!values.event_name || !values.event_name.length) return false;
+    if (!values.event_date || !values.event_date.length) return false;
+    if (!values.event_description || !values.event_description.length) return false;
+
+    return true;
+  };
+
+  onEventSubmit = async () => {
+    const { eventForm, reset } = this.props;
+
+    const eventRef = database.ref('/Events');
+
+    try {
+      if (!eventForm || !eventForm.createEvent) throw new Error('Le formulaire est vide');
+
+      const { values } = eventForm.createEvent;
+
+      // Form Sanitizing
+      if (values.event_private == null) values.event_private = false;
+      if (!this.validateEventOnSubmit(values)) throw new Error('Le formulaire est incomplet');
+
+      // Ready to Send
+      this.setState({ formError: '' });
+      console.log('sending the form');
+
+      const eventChild = eventRef.child(`event_${Date.now()}`);
+
+      eventChild.update({
+        date: values.event_date,
+        description: values.event_description,
+        name: values.event_name,
+        isPrivate: values.event_private,
+        address: values.event_address,
+      });
+
+      reset();
+
+      // navigate to map, with the intent to show the event
+    } catch (error) {
+      setTimeout(() => {
+        this.setState({ formError: '' });
+      }, 5000);
+      this.setState({ formError: error.message });
+    }
+  };
+
+  render() {
+    const { formError, dateOpen, chosenDate } = this.state;
 
     return (
       <View
@@ -130,6 +210,7 @@ class CreateEventScreen extends React.Component {
             paddingTop: 35
           }}
         >
+          <Text style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{formError}</Text>
           <Field
             osefIcon={<Icon name="tag" size={24} color={AV.primaryColor} />}
             osefLabel="Nom"
@@ -137,23 +218,49 @@ class CreateEventScreen extends React.Component {
             component={TextInputOsef}
           />
 
+          {!dateOpen && (
+            <Field
+              osefIcon={<Icon name="calendar" size={24} color={AV.primaryColor} />}
+              osefLabel="Date"
+              name="event_date"
+              onPress={this.handleDatePickerOpen}
+              component={TextInputOsef}
+            />
+          )}
+          {dateOpen && (
+            <React.Fragment>
+              <DatePickerIOS mode="date" date={chosenDate} onDateChange={this.formatIosDate} />
+              <Button
+                onPress={() => this.setState({ dateOpen: false })}
+                title="Valider la date"
+                ViewComponent={LinearGradient}
+                linearGradientProps={{
+                  colors: [AV.primaryColor, '#7aa8ff'],
+                  start: { x: 0, y: 1 },
+                  end: { x: 0, y: 0 }
+                }}
+              />
+            </React.Fragment>
+          )}
+
           <Field
-            osefIcon={<Icon name="calendar" size={24} color={AV.primaryColor} />}
-            osefLabel="Date"
-            name="event_date"
+            osefIcon={<EntypoIcon name="address" size={24} color={AV.primaryColor} />}
+            osefLabel="Adresse"
+            name="event_address"
             component={TextInputOsef}
           />
 
           <Field osefLabel="Privé" name="event_private" component={CheckBoxOsef} />
 
           <Field
-            osefIcon="file"
+            osefIcon={<Icon name="file" size={24} color={AV.primaryColor} />}
             osefLabel="Description"
             name="event_description"
-            component={TextAreaOsef}
+            component={TextInputOsef}
           />
 
           <Button
+            onPress={this.onEventSubmit}
             containerStyle={{ paddingTop: 30 }}
             title="Créer l'Évènement"
             ViewComponent={LinearGradient}
@@ -173,7 +280,7 @@ class CreateEventScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  form: state.form
+  eventForm: state.form
 });
 
 export default connect(
