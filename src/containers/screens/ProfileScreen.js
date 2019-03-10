@@ -8,7 +8,6 @@ import {
 import firebase from 'react-native-firebase';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AV from '../../AppVariables';
 import ErrorMessage from '../../utils/ErrorMessage';
@@ -29,7 +28,7 @@ class ProfileScreen extends React.Component {
   state = {
     profileError: false,
     eventList: [],
-    photo: null
+    photo: null,
   };
 
   constructor(props) {
@@ -125,7 +124,11 @@ class ProfileScreen extends React.Component {
   };
 
   render() {
-    const { eventList, profileError, photo } = this.state;
+    const {
+      eventList, profileError, photo,
+    } = this.state;
+
+    const { login } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
@@ -148,7 +151,8 @@ class ProfileScreen extends React.Component {
               <Avatar size="large" rounded title="AN" />
             )}
 
-            <Text style={{ marginTop: 10, color: 'white' }}>hugo.villevieille@epitech.eu</Text>
+            <Text style={{ marginTop: 10, color: 'white', fontSize: 17 }}>{login.email}</Text>
+            <Text style={{ marginTop: 10, color: 'white' }}>{`@${login.nick}`}</Text>
           </View>
         </View>
 

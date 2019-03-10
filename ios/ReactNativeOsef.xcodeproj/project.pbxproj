@@ -42,6 +42,7 @@
 		586A5832541F487FAE39905A /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F92BC51BF2A546DE92F3EDB0 /* FontAwesome5_Brands.ttf */; };
 		68B70528A2734DEA89C8B214 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC8C743C046423C960F2237 /* libRNFirebase.a */; };
 		703EA501718B4245A00EF893 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 353EE117F66444839C310A6B /* Entypo.ttf */; };
+		7792F6812235BA4A00EE19B1 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 775783FD2235B6AF00015F9D /* libRNImagePicker.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8E505918DC1C4ACA8B283410 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B3C6EBCC8A654809BB4E5919 /* Octicons.ttf */; };
 		8E7D4B171F8AFD9C00699FE4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E7D4B161F8AFD9B00699FE4 /* GoogleService-Info.plist */; };
@@ -410,6 +411,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7792F6812235BA4A00EE19B1 /* libRNImagePicker.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
