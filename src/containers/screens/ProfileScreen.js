@@ -9,12 +9,23 @@ const listItems = [
     name: 'Mon premier événement',
     avatar_url:
       'https://i0.wp.com/menaentrepreneur.org/wp-content/uploads/2017/06/Event-management-1.png',
-    subtitle: "16/03/19 - C'est mon premier événement crée avec l'application !"
+    subtitle: "16/03/19 - C'est mon premier événement crée avec l'application !",
+    event_address: '18 place Paul Mistral, Grenoble, France',
+    event_description: 'C’est la date de mon anniversaire',
+    event_isPrivate: false,
+    event_name: 'Mon premier événement',
+    event_date: '13/12/1995'
   },
   {
     name: 'Manif gilets jaunes du 30 mars',
     avatar_url: 'https://media.intersport.fr/is/image/intersportfr/2248472AJ5_Q1',
-    subtitle: '30/03/19 - Venez nombreux pour la 2436ème édition de la manif des gilets jaunes.'
+    subtitle: '30/03/19 - Venez nombreux pour la 2436ème édition de la manif des gilets jaunes.',
+    event_address: '50 Rue Baldner, Strasbourg, France',
+    event_description:
+      'Cet événement est crée à partir de l’app en mode développement par hugo.villevieille@epitech.eu',
+    event_isPrivate: true,
+    event_name: 'Manif gilets jaunes du 30 mars',
+    event_date: '15/3/2024'
   }
 ];
 
@@ -32,15 +43,15 @@ class ProfileScreen extends React.Component {
     // Récupération des events
   };
 
-  goToSingleEvent = () => {
+  goToSingleEvent = (event) => {
     const { navigation } = this.props;
 
-    navigation.navigate('SingleEvent');
+    navigation.navigate('SingleEvent', { event });
   };
 
   render() {
     return (
-      <React.Fragment>
+      <View style={{ flex: 1 }}>
         <View style={{ height: 225, backgroundColor: AV.primaryColor }}>
           <View
             style={{
@@ -57,10 +68,12 @@ class ProfileScreen extends React.Component {
           <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 25 }}>Vos Événements</Text>
         </View>
         <ScrollView style={{ marginTop: 20 }}>
-          {listItems.map(l => (
+          {listItems.map((l, i) => (
             <ListItem
+              topDivider={i === 0}
+              bottomDivider
               chevron
-              onPress={this.goToSingleEvent}
+              onPress={() => this.goToSingleEvent(l)}
               key={l.name}
               leftAvatar={{ source: { uri: l.avatar_url } }}
               title={l.name}
@@ -68,7 +81,7 @@ class ProfileScreen extends React.Component {
             />
           ))}
         </ScrollView>
-      </React.Fragment>
+      </View>
     );
   }
 }

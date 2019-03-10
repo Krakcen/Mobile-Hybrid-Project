@@ -18,17 +18,20 @@ class LoginScreen extends React.Component {
   interval = null;
 
   componentDidMount = () => {
-    firebaseService.listenToAuthUser((user) => {
-      if (user) {
-        this.setState({ loggedIn: true });
-      } else {
-        this.setState({ loggedIn: false });
-      }
-    });
-    const { loggedIn } = this.state;
-    if (loggedIn) {
-      firebaseService.logOutCurrentUser();
-    }
+    const { navigation } = this.props;
+
+    navigation.navigate('Main');
+    // firebaseService.listenToAuthUser((user) => {
+    //   if (user) {
+    //     this.setState({ loggedIn: true });
+    //   } else {
+    //     this.setState({ loggedIn: false });
+    //   }
+    // });
+    // const { loggedIn } = this.state;
+    // if (loggedIn) {
+    //   firebaseService.logOutCurrentUser();
+    // }
   };
 
   componentWillUnmount = () => {};

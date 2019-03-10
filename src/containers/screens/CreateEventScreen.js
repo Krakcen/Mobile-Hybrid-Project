@@ -16,6 +16,7 @@ import firebase from 'react-native-firebase';
 
 import StatusBarIphone from '../../components/StatusBarIphone';
 import AV from '../../AppVariables';
+import makeId from '../../utils/makeId';
 
 const DISPLAY_DEV = false;
 
@@ -150,7 +151,7 @@ class CreateEventScreen extends React.Component {
   };
 
   onEventSubmit = async () => {
-    const { eventForm, reset } = this.props;
+    const { eventForm, reset, navigation } = this.props;
 
     const eventRef = database.ref('/Events');
 
@@ -174,12 +175,13 @@ class CreateEventScreen extends React.Component {
         description: values.event_description,
         name: values.event_name,
         isPrivate: values.event_private,
-        address: values.event_address,
+        address: values.event_address
       });
 
       reset();
 
-      // navigate to map, with the intent to show the event
+      // TODO navigate to map, with the intent to show the event
+      navigation.navigate('Map', { mapEvent: { hello: 'world', id: makeId(10) } });
     } catch (error) {
       setTimeout(() => {
         this.setState({ formError: '' });

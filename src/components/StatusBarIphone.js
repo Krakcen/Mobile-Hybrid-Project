@@ -5,7 +5,7 @@ const StatusBarIphone = ({ style }) => <View style={[styles.statusBarBackground,
 
 const styles = StyleSheet.create({
   statusBarBackground: {
-    height: Platform.OS === 'ios' ? 18 : 0,
+    height: Platform.OS === 'ios' ? 20 : 0,
     backgroundColor: 'white'
   }
 });

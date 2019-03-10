@@ -8,7 +8,7 @@ export default createStackNavigator(
     ProfileMain: {
       screen: ProfileScreen,
       navigationOptions: () => ({
-        headerMode: 'none'
+        header: null
       })
     },
     SingleEvent: { screen: SingleEventScreen }

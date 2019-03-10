@@ -27,11 +27,11 @@ export default createMaterialBottomTabNavigator(
     About: { screen: AboutScreen }
   },
   {
-    initialRouteName: 'Profile',
+    initialRouteName: 'Map',
     shifting: true,
     activeColor: AV.primaryColor,
     inactiveColor: AV.gray,
-    barStyle: { backgroundColor: 'white' }
+    barStyle: { backgroundColor: '#f9f9f9' }
   }
 );
 
