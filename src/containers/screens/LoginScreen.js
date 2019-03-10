@@ -142,11 +142,17 @@ class LoginScreen extends React.Component {
         <Button
           onPress={async () => {
             const { email, password, nick } = this.state;
-            firebaseService.signUpUser(email, password).then(() => {
-              firebaseService.loginUser(email, password).then(() => {
+            const { connectUser } = this.props;
+            firebaseService.signUpUser(email, password).then(async () => {
+              firebaseService.loginUser(email, password).then(async () => {
                 const { loggedIn } = this.state;
                 if (loggedIn) {
                   firebaseService.createUser(email, nick);
+                  const uid = await firebaseService.getCurrentUser();
+                  const user = await firebaseService.fetchUser(uid);
+                  user.once('value').then((snapshot) => {
+                    connectUser(email, (snapshot.val() && snapshot.val().nick) || 'Anonymous', uid);
+                  });
                   navigation.navigate('Main');
                 }
               });
