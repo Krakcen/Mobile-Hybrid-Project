@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux';
-
 const logInReducer = (
   state = {
     logged: false,
@@ -23,6 +21,4 @@ const logInReducer = (
   }
 };
 
-export default combineReducers({
-  login: logInReducer
-});
+export default logInReducer;

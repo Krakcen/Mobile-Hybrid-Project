@@ -5,6 +5,7 @@ import { Avatar, Text, ListItem } from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import AV from '../../AppVariables';
+import ErrorMessage from '../../utils/ErrorMessage';
 
 const database = firebase.database();
 
@@ -81,7 +82,7 @@ class ProfileScreen extends React.Component {
 
   render() {
     const { login } = this.props;
-    const { eventList } = this.state;
+    const { eventList, profileError } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -115,6 +116,11 @@ class ProfileScreen extends React.Component {
             />
           ))}
         </ScrollView>
+        <ErrorMessage
+          active={profileError}
+          setOff={() => this.setState({ profileError: false })}
+          errorText={profileError}
+        />
       </View>
     );
   }
