@@ -7,6 +7,7 @@ import {
 } from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AV from '../../AppVariables';
 import { uploadImage, logOutCurrentUser, getUserImage } from '../../services/firebase';
