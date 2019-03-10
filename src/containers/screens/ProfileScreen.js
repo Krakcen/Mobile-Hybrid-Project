@@ -28,15 +28,17 @@ class ProfileScreen extends React.Component {
   state = {
     profileError: false,
     eventList: [],
-    photo: null,
+    photo: null
   };
 
   constructor(props) {
     super(props);
     const { login } = this.props;
-    getUserImage(`profileImage${login.uid}`).then((result) => {
-      this.setState({ photo: result });
-    });
+    getUserImage(`profileImage${login.uid}`)
+      .then((result) => {
+        this.setState({ photo: result });
+      })
+      .catch(() => {});
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
         const { dx, dy } = gestureState;
@@ -124,9 +126,7 @@ class ProfileScreen extends React.Component {
   };
 
   render() {
-    const {
-      eventList, profileError, photo,
-    } = this.state;
+    const { eventList, profileError, photo } = this.state;
 
     const { login } = this.props;
 
@@ -146,26 +146,30 @@ class ProfileScreen extends React.Component {
                   uri: photo
                 }}
                 style={{ width: 100, height: 100, borderRadius: 50 }}
+                onPress={() => this.handleUpload()}
               />
             ) : (
-              <Avatar size="large" rounded title="AN" />
+              <Avatar size="large" rounded title="EDIT" onPress={() => this.handleUpload()} />
             )}
 
             <Text style={{ marginTop: 10, color: 'white', fontSize: 17 }}>{login.email}</Text>
             <Text style={{ marginTop: 10, color: 'white' }}>{`@${login.nick}`}</Text>
+            <Button
+              title="Log out"
+              onPress={() => {
+                this.setState({ photo: null });
+                this.handlelogOut();
+              }}
+              style={{ marginTop: 10 }}
+            />
           </View>
         </View>
 
         <View>
           <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 25 }}>Vos Événements</Text>
         </View>
-        <Button title="Upload Image" onPress={() => this.handleUpload()} />
-        <Button
-          title="Log out"
-          onPress={() => {
-            this.handlelogOut();
-          }}
-        />
+        {/* <Button title="Upload Image" onPress={() => this.handleUpload()} /> */}
+
         <ScrollView style={{ marginTop: 20 }}>
           {eventList.map((l, i) => (
             <ListItem
