@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, ScrollView, PanResponder, Image
+  View, ScrollView, PanResponder, Image, Platform, TouchableOpacity
 } from 'react-native';
 import {
   Avatar, Text, ListItem, Button
@@ -132,7 +132,9 @@ class ProfileScreen extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ height: 225, backgroundColor: AV.primaryColor }}>
+        <View
+          style={{ height: Platform.OS === 'ios' ? 300 : 270, backgroundColor: AV.primaryColor }}
+        >
           <View
             style={{
               flex: 1,
@@ -141,26 +143,30 @@ class ProfileScreen extends React.Component {
             }}
           >
             {photo ? (
-              <Image
-                source={{
-                  uri: photo
-                }}
-                style={{ width: 100, height: 100, borderRadius: 50 }}
-                onPress={() => this.handleUpload()}
-              />
+              <TouchableOpacity onPress={() => this.handleUpload()}>
+                <Image
+                  source={{
+                    uri: photo
+                  }}
+                  style={{ width: 100, height: 100, borderRadius: 50 }}
+                />
+              </TouchableOpacity>
             ) : (
               <Avatar size="large" rounded title="EDIT" onPress={() => this.handleUpload()} />
             )}
 
             <Text style={{ marginTop: 10, color: 'white', fontSize: 17 }}>{login.email}</Text>
-            <Text style={{ marginTop: 10, color: 'white' }}>{`@${login.nick}`}</Text>
+            <Text style={{ marginTop: 10, color: 'white', marginBottom: 20 }}>
+              {`@${
+                login.nick
+              }`}
+            </Text>
             <Button
               title="Log out"
               onPress={() => {
                 this.setState({ photo: null });
                 this.handlelogOut();
               }}
-              style={{ marginTop: 10 }}
             />
           </View>
         </View>

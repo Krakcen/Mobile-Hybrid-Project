@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
-import { Input } from 'react-native-elements';
+import { View } from 'react-native';
+import { Input, Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import * as firebaseService from '../../services/firebase';
 import { logUser } from '../../redux/actions/loginActions';
@@ -45,7 +45,7 @@ class LoginScreen extends React.Component {
   componentWillUnmount = () => {};
 
   render() {
-    const { navigation, login } = this.props;
+    const { navigation } = this.props;
     const {
       countFinished,
       passwordError,
@@ -56,14 +56,22 @@ class LoginScreen extends React.Component {
     } = this.state;
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'space-evenly'
+        }}
+      >
         {countFinished && <Text>You logged in !</Text>}
-        <Text>
-          Login
-          {' '}
-          {login.email}
-          {' '}
-          {login.nick}
+        <Text
+          style={{
+            marginTop: 100,
+            fontSize: 25,
+            fontWeight: 'bold',
+          }}
+        >
+          Log In
         </Text>
         <Input
           placeholder="Email Address"
@@ -89,8 +97,9 @@ class LoginScreen extends React.Component {
           }}
         />
         <Button
+          style={{ marginBottom: 35 }}
           onPress={async () => {
-            const { email, password, loggedIn } = this.state;
+            const { email, password } = this.state;
             const { connectUser } = this.props;
             if (email && password && email.length && password.length) {
               await firebaseService.loginUser(email, password).then(async () => {
@@ -113,7 +122,7 @@ class LoginScreen extends React.Component {
           }}
           title="Login"
         />
-        <Text>Sign Up</Text>
+        <Text style={{ marginTop: 35, fontSize: 25, fontWeight: 'bold' }}>Sign Up</Text>
         <Input
           placeholder="Email Address"
           textContentType="emailAddress"

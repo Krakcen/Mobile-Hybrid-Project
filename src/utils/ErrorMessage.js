@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, Platform } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 export default ({ active, setOff, errorText }) => (
   <React.Fragment>
