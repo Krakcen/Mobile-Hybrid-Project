@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>PRODUCT_NAME</key>
+	<string>OsefApp</string>
 	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
 	<string>ca-app-pub-3940256099942544/2934735716</string>
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
@@ -36,5 +38,13 @@
 	<string>1:205034393977:ios:d286b4fcb33c1079</string>
 	<key>DATABASE_URL</key>
 	<string>https://reactnative-8ec2d.firebaseio.com</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to use your camera</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to your microphone (for videos)</string>
 </dict>
 </plist>

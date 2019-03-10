@@ -1,10 +1,15 @@
 import React from 'react';
-import { View, ScrollView, PanResponder } from 'react-native';
-import firebase from 'react-native-firebase';
-import { Avatar, Text, ListItem } from 'react-native-elements';
+import {
+  View, ScrollView, PanResponder, Image
+} from 'react-native';
+import {
+  Avatar, Text, ListItem, Button
+} from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import ImagePicker from 'react-native-image-picker';
 import AV from '../../AppVariables';
+import { uploadImage, logOutCurrentUser, getUserImage } from '../../services/firebase';
 
 const database = firebase.database();
 
@@ -20,18 +25,25 @@ class ProfileScreen extends React.Component {
 
   state = {
     profileError: false,
-    eventList: []
+    eventList: [],
+    photo: null,
   };
 
   constructor(props) {
     super(props);
+    const { login } = this.props;
+    getUserImage(`profileImage${login.uid}`).then((result) => {
+      this.setState({ photo: result });
+    });
     this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderMove: (evt, gestureState) => {},
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        const { dx, dy } = gestureState;
+        if (dx > 30 || dx < -30 || dy > 30 || dy < -30) {
+          return true;
+        }
+        return false;
+      },
+      onPanResponderTerminationRequest: () => true,
       onPanResponderRelease: (evt, gestureState) => {
         const { navigation } = props;
         if (gestureState.dx < -200) {
@@ -39,8 +51,7 @@ class ProfileScreen extends React.Component {
         } else if (gestureState.dx > 200) {
           navigation.navigate('Map');
         }
-      },
-      onPanResponderTerminate: (evt, gestureState) => {}
+      }
     });
   }
 
@@ -79,9 +90,35 @@ class ProfileScreen extends React.Component {
     navigation.navigate('SingleEvent', { event });
   };
 
+  handlelogOut = async () => {
+    const { navigation } = this.props;
+    logOutCurrentUser();
+    navigation.navigate('Login');
+  };
+
+  handleUpload = async () => {
+    const { login } = this.props;
+    const options = {
+      title: 'Select Avatar',
+      customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+    await ImagePicker.showImagePicker(options, async (response) => {
+      if (!response.didCancel) {
+        await uploadImage(`profileImage${login.uid}`, response.uri);
+        getUserImage(`profileImage${login.uid}`).then((result) => {
+          this.setState({ photo: result });
+        });
+      }
+    });
+  };
+
   render() {
     const { login } = this.props;
-    const { eventList } = this.state;
+    const { eventList, photo } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -93,14 +130,31 @@ class ProfileScreen extends React.Component {
               alignItems: 'center'
             }}
           >
-            <Avatar size="large" rounded title="HV" />
-            <Text style={{ marginTop: 10, color: 'white', fontSize: 17 }}>{login.email}</Text>
-            <Text style={{ marginTop: 10, color: 'white' }}>{`@${login.nick}`}</Text>
+            {photo ? (
+              <Image
+                source={{
+                  uri: photo
+                }}
+                style={{ width: 100, height: 100, borderRadius: 50 }}
+              />
+            ) : (
+              <Avatar size="large" rounded title="AN" />
+            )}
+
+            <Text style={{ marginTop: 10, color: 'white' }}>hugo.villevieille@epitech.eu</Text>
           </View>
         </View>
+
         <View>
           <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 25 }}>Vos Événements</Text>
         </View>
+        <Button title="Upload Image" onPress={() => this.handleUpload()} />
+        <Button
+          title="Log out"
+          onPress={() => {
+            this.handlelogOut();
+          }}
+        />
         <ScrollView style={{ marginTop: 20 }}>
           {eventList.map((l, i) => (
             <ListItem

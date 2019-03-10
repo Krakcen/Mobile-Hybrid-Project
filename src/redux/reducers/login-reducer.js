@@ -17,7 +17,6 @@ const logInReducer = (
         email: action.payload.email,
         uid: action.payload.uid
       };
-
     default:
       return state;
   }
