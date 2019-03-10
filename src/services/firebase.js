@@ -37,8 +37,8 @@ export const signUpUser = async (email, password) => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .catch((error) => {
-      alert(error);
+    .catch((/* error */) => {
+      // alert(error);
     });
 };
 
@@ -59,8 +59,8 @@ export const loginUser = async (email, password) => {
   firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .catch((error) => {
-      alert(error);
+    .catch((/* error */) => {
+      // alert(error);
     });
 };
 

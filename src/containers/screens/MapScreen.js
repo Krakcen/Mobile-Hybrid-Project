@@ -123,13 +123,11 @@ class MapScreen extends React.Component {
       // display the portion of the map corresponding, and set the marker.
       if (!mapEvent.id) return;
       if (mapEvent.id !== currentParamID) {
-        // console.log('Displaying the event', mapEvent);
         this.setState({ currentParamID: mapEvent.id });
         this.navigateToEvent(mapEvent);
       }
     } else {
       // if no params, show the current position
-      // console.log('NO PARAM');
     }
   };
 
@@ -180,7 +178,6 @@ class MapScreen extends React.Component {
       //   this.setState({ searchLoading: false });
       // }, 1000);
     } catch (error) {
-      console.log(error);
       this.setState({ mapError: error.message });
     }
   };
@@ -192,7 +189,6 @@ class MapScreen extends React.Component {
 
   handleGeolocation = async () => {
     try {
-      console.log(this.state.mapLoading);
       const camera = await this.map.getCamera();
       const { map } = this;
 
@@ -202,18 +198,16 @@ class MapScreen extends React.Component {
           const newCam = camera;
 
           this.setState({ geoLoading: false });
-          console.log(position);
           newCam.center.longitude = position.coords.longitude;
           newCam.center.latitude = position.coords.latitude;
           newCam.zoom = 15.4114351272583;
 
           map.animateCamera(newCam, { duration: 2000 });
         },
-        error => this.setState({ error: error.message }),
+        error => this.setState({ mapError: error.message }),
         { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
       );
     } catch (error) {
-      console.log(error);
       this.setState({ mapError: error.message });
     }
   };

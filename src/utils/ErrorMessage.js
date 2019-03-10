@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, Platform } from 'react-native';
 
 export default ({ active, setOff, errorText }) => (
   <React.Fragment>
@@ -8,7 +8,7 @@ export default ({ active, setOff, errorText }) => (
         onPress={setOff}
         style={{
           position: 'absolute',
-          top: 0,
+          bottom: 0,
           height: 50,
           width: 1000,
           backgroundColor: 'crimson',

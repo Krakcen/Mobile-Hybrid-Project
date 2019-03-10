@@ -108,8 +108,9 @@ class CreateEventScreen extends React.Component {
     // console.log(`Changed with ${text}`);
   };
 
-  handleDatePickerOpen = async (input) => {
+  handleDatePickerOpen = async () => {
     const { change } = this.props;
+
     try {
       if (Platform.OS === 'ios') {
         // this.setState({ formError: 'runnin the picker on IOS', dateOpen: true });
@@ -127,7 +128,7 @@ class CreateEventScreen extends React.Component {
         // this.setState({ formError: 'runnin the picker on Android' });
       }
     } catch ({ code, message }) {
-      console.warn('Cannot open date picker', message);
+      this.setState({ formError: message });
     }
   };
 
@@ -225,7 +226,6 @@ class CreateEventScreen extends React.Component {
             paddingTop: 35
           }}
         >
-          {/* <Text style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{formError}</Text> */}
           <Field
             osefIcon={<Icon name="tag" size={24} color={AV.primaryColor} />}
             osefLabel="Nom"

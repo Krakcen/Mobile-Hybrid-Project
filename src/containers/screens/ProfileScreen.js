@@ -28,7 +28,7 @@ class ProfileScreen extends React.Component {
   state = {
     profileError: false,
     eventList: [],
-    photo: null,
+    photo: null
   };
 
   constructor(props) {
@@ -83,6 +83,9 @@ class ProfileScreen extends React.Component {
         });
     } catch (error) {
       this.setState({ profileError: error.message });
+      setTimeout(() => {
+        this.setState({ profileError: false });
+      }, 10000);
     }
   };
 
@@ -99,27 +102,37 @@ class ProfileScreen extends React.Component {
   };
 
   handleUpload = async () => {
-    const { login } = this.props;
-    const options = {
-      title: 'Select Avatar',
-      customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images'
-      }
-    };
-    await ImagePicker.showImagePicker(options, async (response) => {
-      if (!response.didCancel) {
-        await uploadImage(`profileImage${login.uid}`, response.uri);
-        getUserImage(`profileImage${login.uid}`).then((result) => {
-          this.setState({ photo: result });
-        });
-      }
-    });
+    try {
+      const options = {
+        title: 'Select Avatar',
+        customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+        storageOptions: {
+          skipBackup: true,
+          path: 'images'
+        }
+      };
+
+      console.log(ImagePicker);
+      console.log(ImagePicker.showImagePicker);
+      console.log(await ImagePicker.showImagePicker(options, (response) => { console.log(response); }));
+
+      // await ImagePicker.showImagePicker(options, async (response) => {
+      //   if (!response.didCancel) {
+      //     await uploadImage(`profileImage${login.uid}`, response.uri);
+      //     getUserImage(`profileImage${login.uid}`).then((result) => {
+      //       this.setState({ photo: result });
+      //     });
+      //   }
+      // });
+    } catch (error) {
+      this.setState({ profileError: error.message });
+      setTimeout(() => {
+        this.setState({ profileError: false });
+      }, 10000);
+    }
   };
 
   render() {
-    const { login } = this.props;
     const { eventList, profileError, photo } = this.state;
 
     return (
