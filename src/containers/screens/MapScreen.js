@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View, StyleSheet, Platform, ActivityIndicator, TouchableOpacity
 } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -17,6 +17,7 @@ import MainLoader from '../../utils/MainLoader';
 import customMapStyle from '../../utils/CustomMapStyle';
 import AV from '../../AppVariables';
 import makeId from '../../utils/makeId';
+import ErrorMessage from '../../utils/ErrorMessage';
 
 const database = firebase.database();
 
@@ -74,7 +75,8 @@ class MapScreen extends React.Component {
     searchLoading: false,
     searchResults: listItems,
     geoLoading: false,
-    mapError: false
+    mapError: false,
+    marker: null
   };
 
   map = null;
@@ -96,16 +98,21 @@ class MapScreen extends React.Component {
       newCam.zoom = 15.4114351272583;
 
       map.animateCamera(newCam, { duration: 2000 });
+
+      // set marker
+      this.setState({
+        marker: {
+          latlng: {
+            latitude: event.mapEvent.geometry.location.lat,
+            longitude: event.mapEvent.geometry.location.lng
+          },
+          title: event.mapEvent.name,
+          description: event.mapEvent.description
+        }
+      });
     } catch (error) {
-      console.log(error);
       this.setState({ mapError: error.message });
     }
-
-    // newCam.center.longitude = position.coords.longitude;
-    // newCam.center.latitude = position.coords.latitude;
-    // newCam.zoom = 15.4114351272583;
-
-    // map.animateCamera(newCam, { duration: 2000 });
   };
 
   handleMapDisplay = () => {
@@ -116,13 +123,13 @@ class MapScreen extends React.Component {
       // display the portion of the map corresponding, and set the marker.
       if (!mapEvent.id) return;
       if (mapEvent.id !== currentParamID) {
-        console.log('Displaying the event', mapEvent);
+        // console.log('Displaying the event', mapEvent);
         this.setState({ currentParamID: mapEvent.id });
         this.navigateToEvent(mapEvent);
       }
     } else {
       // if no params, show the current position
-      console.log('NO PARAM');
+      // console.log('NO PARAM');
     }
   };
 
@@ -189,14 +196,6 @@ class MapScreen extends React.Component {
       const camera = await this.map.getCamera();
       const { map } = this;
 
-      // console.log(newCam.center);
-      // newCam.center.longitude += 1;
-      // newCam.heading += 40;
-      // newCam.pitch += 10;
-      // newCam.altitude += 1000;
-      // newCam.zoom -= 2;
-      // newCam.center.latitude += 0.5;
-
       this.setState({ geoLoading: true });
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -226,7 +225,9 @@ class MapScreen extends React.Component {
       searchLoading,
       searchResults,
       searchFocused,
-      geoLoading
+      geoLoading,
+      mapError,
+      marker
     } = this.state;
     return (
       <View style={{ flex: 1 }}>
@@ -239,7 +240,15 @@ class MapScreen extends React.Component {
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={stylesMap.map}
           onMapReady={this.handleMapReady}
-        />
+        >
+          {marker && (
+            <Marker
+              coordinate={marker.latlng}
+              title={marker.title}
+              description={marker.description}
+            />
+          )}
+        </MapView>
         <SearchBar
           onFocus={() => {
             this.setState({ searchFocused: true });
@@ -322,6 +331,11 @@ class MapScreen extends React.Component {
         {mapLoading && (
           <MainLoader backgroundColor={AV.primaryAlpha} loaderColor={AV.secondaryColor} />
         )}
+        <ErrorMessage
+          active={mapError}
+          setOff={() => this.setState({ mapError: false })}
+          errorText={mapError}
+        />
       </View>
     );
   }

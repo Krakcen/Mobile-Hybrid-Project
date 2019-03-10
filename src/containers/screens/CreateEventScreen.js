@@ -12,12 +12,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-
 import firebase from 'react-native-firebase';
 
 import StatusBarIphone from '../../components/StatusBarIphone';
 import AV from '../../AppVariables';
 import makeId from '../../utils/makeId';
+import ErrorMessage from '../../utils/ErrorMessage';
 
 const DISPLAY_DEV = false;
 
@@ -104,16 +104,15 @@ class CreateEventScreen extends React.Component {
     // this.setState({ chosenDate: formatDate });
   };
 
-  handleTextChange = (text) => {
-    console.log(`Changed with ${text}`);
+  handleTextChange = (/* text */) => {
+    // console.log(`Changed with ${text}`);
   };
 
   handleDatePickerOpen = async (input) => {
     const { change } = this.props;
     try {
       if (Platform.OS === 'ios') {
-        // console.log(DatePickerIOS);
-        this.setState({ formError: 'runnin the picker on IOS', dateOpen: true });
+        // this.setState({ formError: 'runnin the picker on IOS', dateOpen: true });
       } else if (Platform.OS === 'android') {
         const {
           action, year, month, day
@@ -125,7 +124,7 @@ class CreateEventScreen extends React.Component {
           change('event_date', `${day}/${month + 1}/${year}`);
           // Selected year, month (0-11), day
         }
-        this.setState({ formError: 'runnin the picker on Android' });
+        // this.setState({ formError: 'runnin the picker on Android' });
       }
     } catch ({ code, message }) {
       console.warn('Cannot open date picker', message);
@@ -154,7 +153,9 @@ class CreateEventScreen extends React.Component {
   };
 
   onEventSubmit = async () => {
-    const { eventForm, reset, navigation } = this.props;
+    const {
+      eventForm, reset, navigation, login
+    } = this.props;
 
     const eventRef = database.ref('/Events');
 
@@ -171,25 +172,27 @@ class CreateEventScreen extends React.Component {
 
       // Ready to Send
       this.setState({ formError: '' });
-      console.log('sending the form');
+      // console.log('sending the form');
 
       const eventChild = eventRef.child(`event_${Date.now()}`);
 
-      eventChild.update({
+      const objectToCreate = {
+        owner: login.uid,
         geometry: json.results[0].geometry,
         date: values.event_date,
         description: values.event_description,
         name: values.event_name,
         isPrivate: values.event_private,
         address: json.results[0].formatted_address
-      });
+      };
+      eventChild.update(objectToCreate);
 
       reset();
 
       // TODO navigate to map, with the intent to show the event
-      navigation.navigate('Map', { mapEvent: { hello: 'world', id: makeId(10) } });
+      navigation.navigate('Map', { mapEvent: { mapEvent: objectToCreate, id: makeId(10) } });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
       setTimeout(() => {
         this.setState({ formError: '' });
@@ -222,7 +225,7 @@ class CreateEventScreen extends React.Component {
             paddingTop: 35
           }}
         >
-          <Text style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{formError}</Text>
+          {/* <Text style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{formError}</Text> */}
           <Field
             osefIcon={<Icon name="tag" size={24} color={AV.primaryColor} />}
             osefLabel="Nom"
@@ -286,13 +289,19 @@ class CreateEventScreen extends React.Component {
         {/* <ScrollView style={{ paddingTop: '20' }}>
           <Field osefLabel="Nom de l'event" name="email" component={TextInputOsef} />
         </ScrollView> */}
+        <ErrorMessage
+          active={formError}
+          setOff={() => this.setState({ formError: false })}
+          errorText={formError}
+        />
       </View>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  eventForm: state.form
+  eventForm: state.form,
+  login: state.login
 });
 
 export default connect(

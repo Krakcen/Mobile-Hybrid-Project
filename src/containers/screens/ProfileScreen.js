@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AV from '../../AppVariables';
+import ErrorMessage from '../../utils/ErrorMessage';
 import { uploadImage, logOutCurrentUser, getUserImage } from '../../services/firebase';
 
 const database = firebase.database();
@@ -119,7 +120,7 @@ class ProfileScreen extends React.Component {
 
   render() {
     const { login } = this.props;
-    const { eventList, photo } = this.state;
+    const { eventList, profileError, photo } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -170,6 +171,11 @@ class ProfileScreen extends React.Component {
             />
           ))}
         </ScrollView>
+        <ErrorMessage
+          active={profileError}
+          setOff={() => this.setState({ profileError: false })}
+          errorText={profileError}
+        />
       </View>
     );
   }
