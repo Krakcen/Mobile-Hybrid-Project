@@ -37,9 +37,7 @@ export const signUpUser = async (email, password) => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .catch((error) => {
-      alert(error);
-    });
+    .catch(() => {});
 };
 
 export const listenToAuthUser = async (func) => {
@@ -56,12 +54,10 @@ export const getCurrentUser = async () => {
 export const logOutCurrentUser = async () => firebase.auth().signOut();
 
 export const loginUser = async (email, password) => {
-  firebase
+  await firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .catch((error) => {
-      alert(error);
-    });
+    .catch(() => {});
 };
 
 export const createUser = async (email, nick) => {

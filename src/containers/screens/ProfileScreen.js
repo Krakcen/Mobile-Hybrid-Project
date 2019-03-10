@@ -5,6 +5,7 @@ import {
 import {
   Avatar, Text, ListItem, Button
 } from 'react-native-elements';
+import firebase from 'react-native-firebase';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
@@ -26,7 +27,7 @@ class ProfileScreen extends React.Component {
   state = {
     profileError: false,
     eventList: [],
-    photo: null,
+    photo: null
   };
 
   constructor(props) {
@@ -92,7 +93,8 @@ class ProfileScreen extends React.Component {
 
   handlelogOut = async () => {
     const { navigation } = this.props;
-    logOutCurrentUser();
+
+    await logOutCurrentUser();
     navigation.navigate('Login');
   };
 
@@ -106,6 +108,7 @@ class ProfileScreen extends React.Component {
         path: 'images'
       }
     };
+
     await ImagePicker.showImagePicker(options, async (response) => {
       if (!response.didCancel) {
         await uploadImage(`profileImage${login.uid}`, response.uri);
