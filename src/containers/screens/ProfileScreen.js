@@ -5,6 +5,7 @@ import {
 import {
   Avatar, Text, ListItem, Button
 } from 'react-native-elements';
+import firebase from 'react-native-firebase';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import firebase from 'react-native-firebase';
@@ -97,39 +98,30 @@ class ProfileScreen extends React.Component {
 
   handlelogOut = async () => {
     const { navigation } = this.props;
-    logOutCurrentUser();
+
+    await logOutCurrentUser();
     navigation.navigate('Login');
   };
 
   handleUpload = async () => {
-    try {
-      const options = {
-        title: 'Select Avatar',
-        customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-        storageOptions: {
-          skipBackup: true,
-          path: 'images'
-        }
-      };
+    const { login } = this.props;
+    const options = {
+      title: 'Select Avatar',
+      customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
 
-      console.log(ImagePicker);
-      console.log(ImagePicker.showImagePicker);
-      console.log(await ImagePicker.showImagePicker(options, (response) => { console.log(response); }));
-
-      // await ImagePicker.showImagePicker(options, async (response) => {
-      //   if (!response.didCancel) {
-      //     await uploadImage(`profileImage${login.uid}`, response.uri);
-      //     getUserImage(`profileImage${login.uid}`).then((result) => {
-      //       this.setState({ photo: result });
-      //     });
-      //   }
-      // });
-    } catch (error) {
-      this.setState({ profileError: error.message });
-      setTimeout(() => {
-        this.setState({ profileError: false });
-      }, 10000);
-    }
+    await ImagePicker.showImagePicker(options, async (response) => {
+      if (!response.didCancel) {
+        await uploadImage(`profileImage${login.uid}`, response.uri);
+        getUserImage(`profileImage${login.uid}`).then((result) => {
+          this.setState({ photo: result });
+        });
+      }
+    });
   };
 
   render() {

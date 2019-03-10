@@ -56,7 +56,7 @@ export const getCurrentUser = async () => {
 export const logOutCurrentUser = async () => firebase.auth().signOut();
 
 export const loginUser = async (email, password) => {
-  firebase
+  await firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
     .catch((/* error */) => {
