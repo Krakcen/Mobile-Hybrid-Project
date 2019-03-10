@@ -3,6 +3,7 @@ import { Text, View, ScrollView } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import MainLoader from '../../utils/MainLoader';
 import AV from '../../AppVariables';
@@ -11,7 +12,7 @@ import makeId from '../../utils/makeId';
 const CardInfo = ({
   title, icon, description, button = false, onPress = () => {}
 }) => (
-  <Card title={title}>
+  <Card key={title} title={title}>
     <View style={{ minHeight: button ? 150 : 100 }}>
       <View
         style={{
@@ -43,7 +44,7 @@ const CardInfo = ({
 
 class SingleEventScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('event', null).event_name
+    title: navigation.getParam('event', null).name
   });
 
   state = {
@@ -64,12 +65,14 @@ class SingleEventScreen extends React.Component {
 
   goToMap = () => {
     const { navigation } = this.props;
+    const { event } = this.state;
 
-    navigation.navigate('Map', { mapEvent: { hello: 'world', id: makeId(10) } });
+    navigation.navigate('Map', { mapEvent: { mapEvent: event, id: makeId(10) } });
   };
 
   render() {
     const { event, eventLoading } = this.state;
+
     return (
       <View
         style={{
@@ -81,37 +84,42 @@ class SingleEventScreen extends React.Component {
         {eventLoading ? (
           <MainLoader backgroundColor={AV.primaryAlpha} loaderColor={AV.secondaryColor} />
         ) : (
-          <React.Fragment>
-            {/* <Text
-              style={{
-                margin: 20,
-                fontSize: 22,
-                color: 'white',
-                fontWeight: 'bold'
-              }}
-            >
-              {event.event_name}
-            </Text> */}
-            <ScrollView>
+          <View>
+            <ScrollView style={{ paddingBottom: 30 }}>
               <CardInfo
-                description={event.event_date}
+                key="Date"
+                description={event.date}
                 title="Date"
                 icon={<Icon name="calendar" size={40} color={AV.secondaryColor} />}
               />
               <CardInfo
-                description={event.event_address}
+                key="Adresse"
+                description={event.address}
                 button
                 onPress={this.goToMap}
                 title="Adresse"
                 icon={<EntypoIcon name="address" size={40} color={AV.secondaryColor} />}
               />
               <CardInfo
-                description={event.event_description}
+                key="Description"
+                description={event.description}
                 title="Description"
                 icon={<Icon name="file" size={40} color={AV.secondaryColor} />}
               />
+              <CardInfo
+                key="Visibility"
+                description={event.isPrivate ? 'Événement privé' : 'Événement public'}
+                title="Visibilité"
+                icon={
+                  event.isPrivate ? (
+                    <EntypoIcon name="lock" size={40} color={AV.secondaryColor} />
+                  ) : (
+                    <MaterialIcon name="public" size={40} color={AV.secondaryColor} />
+                  )
+                }
+              />
             </ScrollView>
-          </React.Fragment>
+          </View>
         )}
       </View>
     );

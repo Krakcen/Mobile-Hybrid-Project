@@ -3,10 +3,11 @@ import {
   View, StyleSheet, Platform, ActivityIndicator, TouchableOpacity
 } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { connect } from 'react-redux';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import firebase from 'react-native-firebase';
 import { NavigationEvents } from 'react-navigation';
 import {
   SearchBar, Text, Card, Button
@@ -17,28 +18,28 @@ import customMapStyle from '../../utils/CustomMapStyle';
 import AV from '../../AppVariables';
 import makeId from '../../utils/makeId';
 
+const database = firebase.database();
+
 const listItems = [
   {
     name: 'Mon premier événement',
     avatar_url:
       'https://i0.wp.com/menaentrepreneur.org/wp-content/uploads/2017/06/Event-management-1.png',
     subtitle: "16/03/19 - C'est mon premier événement crée avec l'application !",
-    event_address: '18 place Paul Mistral, Grenoble, France',
-    event_description: 'C’est la date de mon anniversaire',
-    event_isPrivate: false,
-    event_name: 'Mon premier événement',
-    event_date: '13/12/1995'
+    address: '18 place Paul Mistral, Grenoble, France',
+    description: 'C’est la date de mon anniversaire',
+    isPrivate: false,
+    date: '13/12/1995'
   },
   {
     name: 'Manif gilets jaunes du 30 mars',
     avatar_url: 'https://media.intersport.fr/is/image/intersportfr/2248472AJ5_Q1',
     subtitle: '30/03/19 - Venez nombreux pour la 2436ème édition de la manif des gilets jaunes.',
-    event_address: '50 Rue Baldner, Strasbourg, France',
-    event_description:
+    address: '50 Rue Baldner, Strasbourg, France',
+    description:
       'Cet événement est crée à partir de l’app en mode développement par hugo.villevieille@epitech.eu',
-    event_isPrivate: true,
-    event_name: 'Manif gilets jaunes du 30 mars',
-    event_date: '15/3/2024'
+    isPrivate: true,
+    date: '15/3/2024'
   }
 ];
 
@@ -73,30 +74,51 @@ class MapScreen extends React.Component {
     searchLoading: false,
     searchResults: listItems,
     geoLoading: false,
+    mapError: false
   };
 
   map = null;
 
   // map.getBounds().contains(marker.getPosition());
 
-  componentDidMount = async () => {
-    console.log();
+  componentDidMount = async () => {};
 
-    this.handleGeolocation();
+  navigateToEvent = async (event) => {
+    // Navigates to the coord, and create the marker
+
+    try {
+      const { map } = this;
+      const camera = await map.getCamera();
+      const newCam = camera;
+      // const newCam = camera;
+      newCam.center.longitude = event.mapEvent.geometry.location.lng;
+      newCam.center.latitude = event.mapEvent.geometry.location.lat;
+      newCam.zoom = 15.4114351272583;
+
+      map.animateCamera(newCam, { duration: 2000 });
+    } catch (error) {
+      console.log(error);
+      this.setState({ mapError: error.message });
+    }
+
+    // newCam.center.longitude = position.coords.longitude;
+    // newCam.center.latitude = position.coords.latitude;
+    // newCam.zoom = 15.4114351272583;
+
+    // map.animateCamera(newCam, { duration: 2000 });
   };
 
   handleMapDisplay = () => {
     const { navigation } = this.props;
-    const { currentParamID } = this.state;
-
+    const { currentParamID, mapLoading } = this.state;
     const mapEvent = navigation.getParam('mapEvent', null);
-
-    if (mapEvent) {
-      // display the portion of the map corresponding.
+    if (mapEvent && !mapLoading) {
+      // display the portion of the map corresponding, and set the marker.
       if (!mapEvent.id) return;
       if (mapEvent.id !== currentParamID) {
         console.log('Displaying the event', mapEvent);
         this.setState({ currentParamID: mapEvent.id });
+        this.navigateToEvent(mapEvent);
       }
     } else {
       // if no params, show the current position
@@ -105,58 +127,106 @@ class MapScreen extends React.Component {
   };
 
   handleMapReady = () => {
+    const { navigation } = this.props;
+    const { currentParamID } = this.state;
+    const mapEvent = navigation.getParam('mapEvent', null);
+
+    if (mapEvent) {
+      if (!mapEvent.id) return;
+      if (mapEvent.id !== currentParamID) {
+        this.navigateToEvent(mapEvent);
+      }
+    } else {
+      this.handleGeolocation();
+    }
     this.setState({ mapLoading: false });
   };
 
-  updateSearch = (search) => {
-    this.setState({ searchValue: search });
+  updateSearch = async (search) => {
+    try {
+      const eventRef = database.ref('/Events');
 
-    this.setState({ searchLoading: true });
-    setTimeout(() => {
-      this.setState({ searchLoading: false });
-    }, 1000);
+      this.setState({ searchValue: search, searchLoading: true });
+
+      const snapshot = await eventRef
+        .orderByChild('name')
+        .limitToLast(50)
+        .once('value');
+      const value = snapshot.val();
+      const searchResults = [];
+
+      let count = 0;
+      Object.keys(value).forEach((key) => {
+        if (count < 3) {
+          const nameLower = value[key].name.toLowerCase();
+          const searchLower = search.toLowerCase();
+          if (nameLower.includes(searchLower)) {
+            searchResults.push(value[key]);
+          }
+        }
+        count += 1;
+      });
+
+      this.setState({ searchResults, searchLoading: false });
+
+      // setTimeout(() => {
+      //   this.setState({ searchLoading: false });
+      // }, 1000);
+    } catch (error) {
+      console.log(error);
+      this.setState({ mapError: error.message });
+    }
   };
 
   handleSearchResultPress = (l) => {
-    console.log(l);
+    this.navigateToEvent({ mapEvent: l });
+    this.setState({ searchValue: '' });
   };
 
   handleGeolocation = async () => {
-    const camera = await this.map.getCamera();
-    const { map } = this;
+    try {
+      console.log(this.state.mapLoading);
+      const camera = await this.map.getCamera();
+      const { map } = this;
 
-    console.log(camera);
+      // console.log(newCam.center);
+      // newCam.center.longitude += 1;
+      // newCam.heading += 40;
+      // newCam.pitch += 10;
+      // newCam.altitude += 1000;
+      // newCam.zoom -= 2;
+      // newCam.center.latitude += 0.5;
 
+      this.setState({ geoLoading: true });
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const newCam = camera;
 
-    // console.log(newCam.center);
-    // newCam.center.longitude += 1;
-    // newCam.heading += 40;
-    // newCam.pitch += 10;
-    // newCam.altitude += 1000;
-    // newCam.zoom -= 2;
-    // newCam.center.latitude += 0.5;
+          this.setState({ geoLoading: false });
+          console.log(position);
+          newCam.center.longitude = position.coords.longitude;
+          newCam.center.latitude = position.coords.latitude;
+          newCam.zoom = 15.4114351272583;
 
-    this.setState({ geoLoading: true });
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const newCam = camera;
-
-        this.setState({ geoLoading: false });
-        console.log(position);
-        newCam.center.longitude = position.coords.longitude;
-        newCam.center.latitude = position.coords.latitude;
-        newCam.zoom = 15.4114351272583;
-
-        map.animateCamera(newCam, { duration: 2000 });
-      },
-      error => this.setState({ error: error.message }),
-      { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
-    );
+          map.animateCamera(newCam, { duration: 2000 });
+        },
+        error => this.setState({ error: error.message }),
+        { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
+      );
+    } catch (error) {
+      console.log(error);
+      this.setState({ mapError: error.message });
+    }
   };
 
   render() {
     const {
-      mapLoading, searchValue, searchLoading, searchResults, searchFocused, geoLoading
+      mapLoading,
+      searchValue,
+      searchLoading,
+      searchResults,
+      searchFocused,
+      geoLoading
     } = this.state;
     return (
       <View style={{ flex: 1 }}>
@@ -169,12 +239,6 @@ class MapScreen extends React.Component {
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={stylesMap.map}
           onMapReady={this.handleMapReady}
-          region={{
-            latitude: 45.1846956,
-            longitude: 5.7323282,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121
-          }}
         />
         <SearchBar
           onFocus={() => {
@@ -221,7 +285,7 @@ class MapScreen extends React.Component {
                         <Text style={{ color: AV.primaryColor, fontSize: 17, marginBottom: 3 }}>
                           {l.name}
                         </Text>
-                        <Text>{l.event_date}</Text>
+                        <Text>{l.date}</Text>
                       </Card>
                     </TouchableOpacity>
                   ))}
@@ -246,7 +310,13 @@ class MapScreen extends React.Component {
             iconContainerStyle={{ margin: 20 }}
             buttonStyle={{ borderRadius: 25, backgroundColor: '#f9f9f9', elevation: 0 }}
             title=""
-            icon={geoLoading ? <MaterialIcon name="timer-sand" size={30} color={AV.primaryColor} /> : <EntypoIcon name="location-pin" size={30} color={AV.primaryColor} />}
+            icon={
+              geoLoading ? (
+                <MaterialIcon name="timer-sand" size={30} color={AV.primaryColor} />
+              ) : (
+                <EntypoIcon name="location-pin" size={30} color={AV.primaryColor} />
+              )
+            }
           />
         </View>
         {mapLoading && (
@@ -257,4 +327,12 @@ class MapScreen extends React.Component {
   }
 }
 
-export default MapScreen;
+const mapStateToProps = (state) => {
+  const { login } = state;
+  return { login };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(MapScreen);

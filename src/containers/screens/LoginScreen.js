@@ -86,15 +86,17 @@ class LoginScreen extends React.Component {
             const { connectUser } = this.props;
             if (email && password && email.length && password.length) {
               await firebaseService.loginUser(email, password);
+
               if (loggedIn) {
                 // Add in ways to get nick and uid from firebase
                 const uid = await firebaseService.getCurrentUser();
                 const user = await firebaseService.fetchUser(uid);
+
                 user.once('value').then((snapshot) => {
                   connectUser(email, (snapshot.val() && snapshot.val().nick) || 'Anonymous', uid);
+                  navigation.navigate('Main');
                 });
                 // alert(this.props.logUser);
-                navigation.navigate('Main');
               } else {
                 this.setState({ passwordError: 'Invalid Password or email' });
               }
