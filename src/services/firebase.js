@@ -11,6 +11,23 @@ const config = {
 
 const firebaseService = firebase.initializeApp(config);
 
+export const uploadImage = async (filename, uri) => firebaseService
+  .storage()
+  .ref('images')
+  .child(filename)
+  .putFile(uri);
+
+export const getUserImage = async file => firebaseService
+  .storage()
+  .ref(`images/${file}`)
+  .getDownloadURL();
+
+export const getImageRef = async filename => firebaseService
+  .storage()
+  .ref('images')
+  .child(filename)
+  .putFile();
+
 export const fetchUser = async (id) => {
   const userRef = await firebaseService.database().ref(`Users/${id}`);
   return userRef;
@@ -29,7 +46,12 @@ export const listenToAuthUser = async (func) => {
   firebase.auth().onAuthStateChanged(func);
 };
 
-export const getCurrentUser = async () => firebase.auth().currentUser.uid.valueOf();
+export const getCurrentUser = async () => {
+  if (firebase.auth().currentUser) {
+    return firebase.auth().currentUser.uid.valueOf();
+  }
+  return null;
+};
 
 export const logOutCurrentUser = async () => firebase.auth().signOut();
 

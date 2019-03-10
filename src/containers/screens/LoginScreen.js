@@ -19,7 +19,8 @@ class LoginScreen extends React.Component {
 
   interval = null;
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    const { connectUser, navigation } = this.props;
     firebaseService.listenToAuthUser((user) => {
       if (user) {
         this.setState({ loggedIn: true });
@@ -27,10 +28,17 @@ class LoginScreen extends React.Component {
         this.setState({ loggedIn: false });
       }
     });
-    const { loggedIn } = this.state;
-    const { navigation } = this.props;
-    if (loggedIn) {
-      navigation.navigate('Main');
+    const uid = await firebaseService.getCurrentUser();
+    if (uid) {
+      const user = await firebaseService.fetchUser(uid);
+      user.once('value').then((snapshot) => {
+        connectUser(
+          snapshot.val() && snapshot.val().email,
+          (snapshot.val() && snapshot.val().nick) || 'Anonymous',
+          uid
+        );
+        navigation.navigate('Main');
+      });
     }
   };
 
@@ -92,9 +100,9 @@ class LoginScreen extends React.Component {
                 const user = await firebaseService.fetchUser(uid);
                 user.once('value').then((snapshot) => {
                   connectUser(email, (snapshot.val() && snapshot.val().nick) || 'Anonymous', uid);
+                  navigation.navigate('Main');
                 });
                 // alert(this.props.logUser);
-                navigation.navigate('Main');
               } else {
                 this.setState({ passwordError: 'Invalid Password or email' });
               }
