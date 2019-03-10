@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import {
   Input, Text, CheckBox, Button
 } from 'react-native-elements';
+import Geocoder from 'react-native-geocoding';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -21,6 +22,8 @@ import makeId from '../../utils/makeId';
 const DISPLAY_DEV = false;
 
 const database = firebase.database();
+
+Geocoder.init('AIzaSyCXeSo5Wmqor851nWuRaF4Xy3yq0WMKlgU');
 
 const TextInputOsef = ({
   input,
@@ -160,6 +163,8 @@ class CreateEventScreen extends React.Component {
 
       const { values } = eventForm.createEvent;
 
+      const json = await Geocoder.from(values.event_address);
+
       // Form Sanitizing
       if (values.event_private == null) values.event_private = false;
       if (!this.validateEventOnSubmit(values)) throw new Error('Le formulaire est incomplet');
@@ -171,11 +176,12 @@ class CreateEventScreen extends React.Component {
       const eventChild = eventRef.child(`event_${Date.now()}`);
 
       eventChild.update({
+        geometry: json.results[0].geometry,
         date: values.event_date,
         description: values.event_description,
         name: values.event_name,
         isPrivate: values.event_private,
-        address: values.event_address
+        address: json.results[0].formatted_address
       });
 
       reset();
@@ -183,10 +189,14 @@ class CreateEventScreen extends React.Component {
       // TODO navigate to map, with the intent to show the event
       navigation.navigate('Map', { mapEvent: { hello: 'world', id: makeId(10) } });
     } catch (error) {
+      console.log(error);
+
       setTimeout(() => {
         this.setState({ formError: '' });
       }, 5000);
-      this.setState({ formError: error.message });
+      this.setState({
+        formError: error.code === 4 ? "l'Adresse ne semble pas répertoriée" : error.message
+      });
     }
   };
 

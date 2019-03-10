@@ -80,6 +80,8 @@ class MapScreen extends React.Component {
   // map.getBounds().contains(marker.getPosition());
 
   componentDidMount = async () => {
+    console.log();
+
     this.handleGeolocation();
   };
 
@@ -168,8 +170,8 @@ class MapScreen extends React.Component {
           style={stylesMap.map}
           onMapReady={this.handleMapReady}
           region={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: 45.1846956,
+            longitude: 5.7323282,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121
           }}
