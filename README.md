@@ -4,7 +4,14 @@ npm install
 npm run start
 npm run ios | npm run android
 
+IOS ONLY:
+```bash
+cd ios && pod install
+```
+
 ---------------------
+
+
 
 ## "No bundle URL present sur IOS"
 

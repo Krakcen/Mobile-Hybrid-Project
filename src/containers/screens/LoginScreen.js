@@ -2,7 +2,6 @@ import React from 'react';
 import { Text, View, Button } from 'react-native';
 import { Input } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import * as firebaseService from '../../services/firebase';
 import { logUser } from '../../redux/actions/loginActions';
 
