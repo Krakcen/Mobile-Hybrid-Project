@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
 import { Input } from 'react-native-elements';
+import { connect } from 'react-redux';
 import * as firebaseService from '../../services/firebase';
+import { logUser } from '../../redux/actions/loginActions';
 
 class LoginScreen extends React.Component {
   state = {
@@ -18,26 +20,24 @@ class LoginScreen extends React.Component {
   interval = null;
 
   componentDidMount = () => {
+    firebaseService.listenToAuthUser((user) => {
+      if (user) {
+        this.setState({ loggedIn: true });
+      } else {
+        this.setState({ loggedIn: false });
+      }
+    });
+    const { loggedIn } = this.state;
     const { navigation } = this.props;
-
-    navigation.navigate('Main');
-    // firebaseService.listenToAuthUser((user) => {
-    //   if (user) {
-    //     this.setState({ loggedIn: true });
-    //   } else {
-    //     this.setState({ loggedIn: false });
-    //   }
-    // });
-    // const { loggedIn } = this.state;
-    // if (loggedIn) {
-    //   firebaseService.logOutCurrentUser();
-    // }
+    if (loggedIn) {
+      navigation.navigate('Main');
+    }
   };
 
   componentWillUnmount = () => {};
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, login } = this.props;
     const {
       countFinished,
       passwordError,
@@ -50,7 +50,13 @@ class LoginScreen extends React.Component {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         {countFinished && <Text>You logged in !</Text>}
-        <Text>Login</Text>
+        <Text>
+          Login
+          {' '}
+          {login.email}
+          {' '}
+          {login.nick}
+        </Text>
         <Input
           placeholder="Email Address"
           textContentType="emailAddress"
@@ -77,9 +83,17 @@ class LoginScreen extends React.Component {
         <Button
           onPress={async () => {
             const { email, password, loggedIn } = this.state;
+            const { connectUser } = this.props;
             if (email && password && email.length && password.length) {
               await firebaseService.loginUser(email, password);
               if (loggedIn) {
+                // Add in ways to get nick and uid from firebase
+                const uid = await firebaseService.getCurrentUser();
+                const user = await firebaseService.fetchUser(uid);
+                user.once('value').then((snapshot) => {
+                  connectUser(email, (snapshot.val() && snapshot.val().nick) || 'Anonymous', uid);
+                });
+                // alert(this.props.logUser);
                 navigation.navigate('Main');
               } else {
                 this.setState({ passwordError: 'Invalid Password or email' });
@@ -145,4 +159,12 @@ class LoginScreen extends React.Component {
   }
 }
 
-export default LoginScreen;
+const mapStateToProps = (state) => {
+  const { login } = state;
+  return { login };
+};
+
+export default connect(
+  mapStateToProps,
+  { connectUser: logUser }
+)(LoginScreen);

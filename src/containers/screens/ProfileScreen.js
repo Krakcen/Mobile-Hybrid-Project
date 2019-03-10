@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, PanResponder } from 'react-native';
 import { Avatar, Text, ListItem } from 'react-native-elements';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
 import AV from '../../AppVariables';
 
 const listItems = [
@@ -39,9 +40,28 @@ class ProfileScreen extends React.Component {
     )
   };
 
-  componentDidMount = () => {
-    // Récupération des events
-  };
+  constructor(props) {
+    super(props);
+    this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderMove: (evt, gestureState) => {},
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        const { navigation } = props;
+        if (gestureState.dx < -200) {
+          navigation.navigate('About');
+        } else if (gestureState.dx > 200) {
+          navigation.navigate('Map');
+        }
+      },
+      onPanResponderTerminate: (evt, gestureState) => {}
+    });
+  }
+
+  componentDidMount = () => {};
 
   goToSingleEvent = (event) => {
     const { navigation } = this.props;
@@ -50,8 +70,9 @@ class ProfileScreen extends React.Component {
   };
 
   render() {
+    const { login } = this.props;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} {...this.panResponder.panHandlers}>
         <View style={{ height: 225, backgroundColor: AV.primaryColor }}>
           <View
             style={{
@@ -61,6 +82,13 @@ class ProfileScreen extends React.Component {
             }}
           >
             <Avatar size="large" rounded title="HV" />
+            <Text>
+              {login.email}
+              {' '}
+              {login.nick}
+              {' '}
+              {login.uid}
+            </Text>
             <Text style={{ marginTop: 10, color: 'white' }}>hugo.villevieille@epitech.eu</Text>
           </View>
         </View>
@@ -86,4 +114,9 @@ class ProfileScreen extends React.Component {
   }
 }
 
-export default ProfileScreen;
+const mapStateToProps = (state) => {
+  const { login } = state;
+  return { login };
+};
+
+export default connect(mapStateToProps)(ProfileScreen);
