@@ -131,7 +131,7 @@ class ProfileScreen extends React.Component {
     const { login } = this.props;
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} {...this.panResponder.panHandlers}>
         <View
           style={{ height: Platform.OS === 'ios' ? 300 : 270, backgroundColor: AV.primaryColor }}
         >
