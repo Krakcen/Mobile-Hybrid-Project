@@ -1,4 +1,4 @@
-package com.osef.reactnativeosef;
+package com.ezvents.kraken;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

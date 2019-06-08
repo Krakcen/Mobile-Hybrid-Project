@@ -22,7 +22,7 @@
   },
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios --simulator=\"iPhone X\"",
+    "ios": "sed -i '' 's/startsWith/includes/g' node_modules/react-native/local-cli/runIOS/findMatchingSimulator.js && react-native run-ios --simulator=\"iPhone X\"",
     "clean-ios": "rm -rf ios/build/ && kill $(lsof -t -i:8081) && react-native run-ios --simulator=\"iPhone X\"",
     "apk": "cd android && ./gradlew assembleRelease",
     "rename": "node ./bin/rename.js",

@@ -1481,7 +1481,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.osef.reactnativeosef;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ezvents.kraken;
 				PRODUCT_NAME = ReactNativeOsef;
 				PROVISIONING_PROFILE_SPECIFIER = "Osef Dev";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1507,7 +1507,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.osef.reactnativeosef;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ezvents.kraken;
 				PRODUCT_NAME = ReactNativeOsef;
 				PROVISIONING_PROFILE_SPECIFIER = Osef;
 				TARGETED_DEVICE_FAMILY = 1;

@@ -68,7 +68,7 @@ class LoginScreen extends React.Component {
           style={{
             marginTop: 100,
             fontSize: 25,
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }}
         >
           Log In
@@ -162,18 +162,31 @@ class LoginScreen extends React.Component {
             const { email, password, nick } = this.state;
             const { connectUser } = this.props;
             firebaseService.signUpUser(email, password).then(async () => {
-              firebaseService.loginUser(email, password).then(async () => {
-                const { loggedIn } = this.state;
-                if (loggedIn) {
-                  firebaseService.createUser(email, nick);
-                  const uid = await firebaseService.getCurrentUser();
-                  const user = await firebaseService.fetchUser(uid);
-                  user.once('value').then((snapshot) => {
-                    connectUser(email, (snapshot.val() && snapshot.val().nick) || 'Anonymous', uid);
-                  });
-                  navigation.navigate('Main');
-                }
-              });
+              console.log('Signup Worked');
+
+              firebaseService
+                .loginUser(email, password)
+                .then(async () => {
+                  console.log('Login Worked');
+
+                  const { loggedIn } = this.state;
+                  if (loggedIn) {
+                    firebaseService.createUser(email, nick);
+                    const uid = await firebaseService.getCurrentUser();
+                    const user = await firebaseService.fetchUser(uid);
+                    user.once('value').then((snapshot) => {
+                      connectUser(
+                        email,
+                        (snapshot.val() && snapshot.val().nick) || 'Anonymous',
+                        uid
+                      );
+                    });
+                    navigation.navigate('Main');
+                  }
+                })
+                .catch((e) => {
+                  console.error(e);
+                });
             });
           }}
           title="Sign-Up"

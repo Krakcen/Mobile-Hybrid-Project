@@ -37,7 +37,8 @@ export const signUpUser = async (email, password) => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .catch((/* error */) => {
+    .catch((error) => {
+      console.error(error);
       // alert(error);
     });
 };
