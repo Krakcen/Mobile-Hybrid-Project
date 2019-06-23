@@ -32,6 +32,8 @@ class LoginScreen extends React.Component {
     if (uid) {
       const user = await firebaseService.fetchUser(uid);
       user.once('value').then((snapshot) => {
+        console.log(snapshot);
+
         connectUser(
           snapshot.val() && snapshot.val().email,
           (snapshot.val() && snapshot.val().nick) || 'Anonymous',

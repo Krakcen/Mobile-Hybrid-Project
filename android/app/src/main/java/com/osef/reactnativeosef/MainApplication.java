@@ -1,4 +1,4 @@
-package com.ezvents.kraken;
+package com.osef.reactnativeosef;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

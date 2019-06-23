@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.ezvents.kraken</string>
+	<string>com.osef.reactnativeosef</string>
 	<key>PROJECT_ID</key>
 	<string>ezevents-53878</string>
 	<key>STORAGE_BUCKET</key>

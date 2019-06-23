@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:444800027198:android:e80d87d2c6dcd0f1",
         "android_client_info": {
-          "package_name": "com.ezvents.kraken"
+          "package_name": "com.osef.reactnativeosef"
         }
       },
       "oauth_client": [
@@ -35,7 +35,7 @@
               "client_id": "444800027198-0irqkhpsbi485ttphtq1if9am4cde3i2.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.ezvents.kraken"
+                "bundle_id": "com.osef.reactnativeosef"
               }
             }
           ]

@@ -34,6 +34,8 @@ class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     const { login } = this.props;
+    console.log(login);
+
     getUserImage(`profileImage${login.uid}`)
       .then((result) => {
         this.setState({ photo: result });
@@ -157,9 +159,7 @@ class ProfileScreen extends React.Component {
 
             <Text style={{ marginTop: 10, color: 'white', fontSize: 17 }}>{login.email}</Text>
             <Text style={{ marginTop: 10, color: 'white', marginBottom: 20 }}>
-              {`@${
-                login.nick
-              }`}
+              {`@${login.nick}`}
             </Text>
             <Button
               title="Log out"
