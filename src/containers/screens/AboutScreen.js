@@ -41,12 +41,10 @@ class AboutScreen extends React.Component {
       >
         <Text style={{ fontSize: 28, height: 80 }}>About OSEF</Text>
         <Text style={{ fontSize: 24, height: 50 }}>Developers:</Text>
-        <Text style={styles.members}>Ronan Courture</Text>
-        <Text style={styles.mails}>ronan.courture@epitech.eu</Text>
         <Text style={styles.members}>Hugo Villevieille</Text>
         <Text style={styles.mails}>hugo.villevieille@epitech.eu</Text>
-        <Text style={styles.members}>Zhitong He</Text>
-        <Text style={styles.mails}>zhitong.he@epitech.eu</Text>
+        <Text style={styles.members}>Maxime Marcuccilli</Text>
+        <Text style={styles.mails}>maxime.marcuccilli@epitech.eu</Text>
       </View>
     );
   }

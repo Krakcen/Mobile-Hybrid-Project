@@ -2,49 +2,35 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>PRODUCT_NAME</key>
-	<string>OsefApp</string>
-	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
-	<string>ca-app-pub-3940256099942544/2934735716</string>
-	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
-	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>205034393977-2l4v0aimdiqfk1vvqvf06jiji0cvis0k.apps.googleusercontent.com</string>
+	<string>444800027198-0irqkhpsbi485ttphtq1if9am4cde3i2.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.205034393977-2l4v0aimdiqfk1vvqvf06jiji0cvis0k</string>
+	<string>com.googleusercontent.apps.444800027198-0irqkhpsbi485ttphtq1if9am4cde3i2</string>
 	<key>API_KEY</key>
-	<string>AIzaSyD5WInGubJQ2HJnElQvBAmYmrNa1dX7VeE</string>
+	<string>AIzaSyDg2IhfcqiNAs7QmqPy8yHOKt8wCU_X0wI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>205034393977</string>
+	<string>444800027198</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.osef.reactnativeosef</string>
 	<key>PROJECT_ID</key>
-	<string>reactnative-8ec2d</string>
+	<string>ezevents-53878</string>
 	<key>STORAGE_BUCKET</key>
-	<string>reactnative-8ec2d.appspot.com</string>
+	<string>ezevents-53878.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<true></true>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
 	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
 	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:205034393977:ios:d286b4fcb33c1079</string>
+	<string>1:444800027198:ios:e80d87d2c6dcd0f1</string>
 	<key>DATABASE_URL</key>
-	<string>https://reactnative-8ec2d.firebaseio.com</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like access to your photo gallery</string>
-    <key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to use your camera</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to your microphone (for videos)</string>
+	<string>https://ezevents-53878.firebaseio.com</string>
 </dict>
 </plist>
